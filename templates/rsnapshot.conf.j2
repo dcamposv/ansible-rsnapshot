@@ -10,24 +10,47 @@ cmd_rm		{{ rsnapshot_cmd_rm }}
 cmd_rsync	{{ rsnapshot_cmd_rsync }}
 cmd_ssh		{{ rsnapshot_cmd_ssh }}
 cmd_logger	{{ rsnapshot_cmd_logger }}
-#cmd_du		   	/usr/bin/du
-#cmd_rsnapshot_diff	/usr/local/bin/rsnapshot-diff
+cmd_du	{{ rsnapshot_cmd_du }}
+cmd_rsnapshot_diff	{{ rsnapshot_cmd_rsnapshot_diff }}
+{% if rsnapshot_cmd_preexec is defined %}
+cmd_preexec	{{ rsnapshot_cmd_preexec }}
+{% else %}
 #cmd_preexec		/path/to/preexec/script
+{% endif %}
+{% if rsnapshot_cmd_postexec is defined %}
+cmd_postexec	{{ rsnapshot_cmd_postexec }}
+{% else %}
 #cmd_postexec		/path/to/postexec/script
-#linux_lvm_cmd_lvcreate	/path/to/lvcreate
-#linux_lvm_cmd_lvremove	/path/to/lvremove
-#linux_lvm_cmd_mount	/sbin/mount
-#linux_lvm_cmd_umount	/sbin/umount
+{% endif %}
+
+# BACKUP LEVELS / INTERVALS 
+{% if rsnapshot_retain_hourly is defined %}
 retain		hourly	{{ rsnapshot_retain_hourly }}
+{% else %}
+#retain		hourly	4
+{% endif %}
+{% if rsnapshot_retain_daily is defined %}
 retain		daily	{{ rsnapshot_retain_daily }}
+{% else %}
+#retain		daily	7
+{% endif %}
+{% if rsnapshot_retain_weekly is defined %}
 retain		weekly	{{ rsnapshot_retain_weekly }}
+{% else %}
+#retain		weekly	4
+{% endif %}
+{% if rsnapshot_retain_monthly is defined %}
 retain		monthly	{{ rsnapshot_retain_monthly }}
+{% else %}
+#retain		weekly	4
+{% endif %}
 
 # GLOBAL OPTIONS
 verbose		{{ rsnapshot_verbose }}
 loglevel	{{ rsnapshot_loglevel }}
 logfile		{{ rsnapshot_logfile }}
 lockfile	{{ rsnapshot_lockfile }}
+
 #rsync_short_args	-a
 #rsync_long_args	--delete --numeric-ids --relative --delete-excluded
 #ssh_args	-p 22
@@ -40,14 +63,37 @@ lockfile	{{ rsnapshot_lockfile }}
 #exclude	???
 #include_file	/path/to/include/file
 #exclude_file	/path/to/exclude/file
-link_dest	{{ rsnapshot_link_dest }}
-#sync_first	   	0
-#use_lazy_deletes	0
+
+{% if rsnapshot_link_dest is defined %}
+link_dest		{{ rsnapshot_link_dest }}
+{% else %}
+#link_dest		0
+{% endif %}
+{% if rsnapshot_sync_first is defined %}
+sync_first		{{ rsnapshot_sync_first }}
+{% else %}
+#sync_first		0
+{% endif %}
+{% if rsnapshot_use_lazy_deletes is defined %}
+use_lazy_deletes		{{ rsnapshot_use_lazy_deletes }}
+{% else %}
+#use_lazy_deletes		0
+{% endif %}
+{% if rsnapshot_rsync_numtries is defined %}
+rsync_numtries		{{ rsnapshot_rsync_numtries }}
+{% else %}
 #rsync_numtries		0
+{% endif %}
+
+#linux_lvm_cmd_lvcreate	/path/to/lvcreate
+#linux_lvm_cmd_lvremove	/path/to/lvremove
+#linux_lvm_cmd_mount	/sbin/mount
+#linux_lvm_cmd_umount	/sbin/umount
 #linux_lvm_snapshotsize	100M
 #linux_lvm_snapshotname	rsnapshot
 #linux_lvm_vgpath	/dev
 #linux_lvm_mountpath	/path/to/mount/lvm/snapshot/during/backup
+
 
 ### BACKUP POINTS/SCRIPTS
 {% for item  in rsnapshot_backup_points %}
