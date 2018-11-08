@@ -40,6 +40,9 @@ rsnapshot_backup_points: []
 #
 rsnapshot_exclude: []
 #  - { regex: ".git/" }
+#
+rsnapshot_backup_execs: []
+#  - { command: "echo 'Backup was Successfull'", type: "optional" }
 
 # EOF
 ...

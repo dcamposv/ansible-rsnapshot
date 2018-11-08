@@ -94,15 +94,19 @@ rsync_numtries		{{ rsnapshot_rsync_numtries }}
 #linux_lvm_vgpath	/dev
 #linux_lvm_mountpath	/path/to/mount/lvm/snapshot/during/backup
 
+### EXCLUDE 
+{% for item  in rsnapshot_exclude %}
+exclude	{{ item.regex }}
+{% endfor %}
 
 ### BACKUP POINTS/SCRIPTS
 {% for item  in rsnapshot_backup_points %}
 backup	{{ item.dir }}	{{ item.host }}
 {% endfor %}
 
-### EXCLUDE 
-{% for item  in rsnapshot_exclude %}
-exclude	{{ item.regex }}
+### BACKUP EXECS
+{% for item  in rsnapshot_backup_execs %}
+backup_exec	{{ item.command }}	{{ item.type }}
 {% endfor %}
 
 # EOF
